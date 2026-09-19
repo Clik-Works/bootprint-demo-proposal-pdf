@@ -68,3 +68,9 @@ At the user's request, the proposal result now shows only the editable A4 pages 
 ## Navigation and saving (2026-09-19)
 
 The minimal result toolbar now contains Home, a browser-save status, Save, and Export PDF. Text still autosaves; Save retries an explicit write to local history. Failed persistence marks changes unsaved, warns before Home or browser Back navigation, and triggers the browser leave warning on reload/close. Cancel keeps the editor open. A successful save clears the warning.
+
+## Demo limits — September 2026
+
+New generation starts are limited to 20 per project per New York calendar day, starting with this rollout. Counters live in private Vercel Blob storage and survive browser resets and deployments. Each start atomically reserves one of 20 non-overwritable slots; failed starts still count. Invalid and unauthenticated requests do not consume slots. Missing/unavailable quota storage blocks generation. `BLOB_READ_WRITE_TOKEN` is server-only.
+
+Generation expires at `2026-09-26T04:00:00.000Z`, immediately after September 25 in America/New_York. Existing browser-local proposals can still be edited/exported. The quota store contains timestamps only, no transcripts or proposal content. The UI shows remaining starts and expiry. Tests cover concurrent reservations, rollover, expiry, storage outages, and authenticated expiry enforcement without paid API calls.

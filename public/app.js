@@ -1,6 +1,6 @@
 import {isDraft,createRecord,readHistory,writeHistory,upsert,findHistory,mergeHistory} from './history.js';
 const $=id=>document.getElementById(id);
-let items=[],requiredKeys=[],activeId=null,editorReady=false,valid=false,busy=false,authenticated=false,configured=false,storageBlocked=false,reviewOpen=true,startedAt=0,ticker,unsaved=false;
+let items=[],requiredKeys=[],activeId=null,editorReady=false,valid=false,busy=false,authenticated=false,configured=false,storageBlocked=false,reviewOpen=true,startedAt=0,ticker,unsaved=false,demoAvailable=false;
 const current=()=>items.find(x=>x.id===activeId);
 const post=(type,data={})=>$('editor').contentWindow?.postMessage({source:'bootprint-app',type,...data},location.origin);
 function notice(text){$('notice').textContent=text;$('notice').hidden=!text;}
@@ -11,7 +11,7 @@ function persist(){
   return !unsaved;
 }
 function updateRecord(patch,{edited=false}={}){const record=current();if(!record)return;items=upsert(items,{...record,...patch,...(edited?{updatedAt:new Date().toISOString()}: {})});persist();controls();}
-function controls(){const r=current();$('export').disabled=!r||!valid;$('reviewed').checked=!!r?.reviewed;$('generate').disabled=busy||!configured;$('generate').textContent=busy?'Proposal in progress…':'Create proposal →';$('runningLink').hidden=!busy;}
+function controls(){const r=current();$('export').disabled=!r||!valid;$('reviewed').checked=!!r?.reviewed;$('generate').disabled=busy||!configured||!demoAvailable;$('generate').textContent=busy?'Proposal in progress…':'Create proposal →';$('runningLink').hidden=!busy;}
 function reviewUI(){
   const r=current();if(!r)return;$('reviewList').replaceChildren();
   if(!r.review.length){const p=document.createElement('p');p.className='muted small';p.textContent='No source notes were included in this draft. Check the scope, timeline, and costs before sharing.';$('reviewList').append(p);}
@@ -69,7 +69,9 @@ window.addEventListener('message',e=>{
   if(m.type==='page')for(const b of document.querySelectorAll('[data-page]'))b.classList.toggle('active',Number(b.dataset.page)===m.page);
 });
 async function api(action,data){const r=await fetch('/api/service?action='+action,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined});let result;try{result=await r.json();}catch{throw Error('The server could not complete this request. Please try again.');}if(!r.ok)throw Error(result.error||'Request failed');return result;}
-async function status(){const s=await api('status');authenticated=s.authenticated;configured=s.configured;if(!authenticated)document.body.classList.remove('document-mode');$('loginPanel').hidden=authenticated;$('app').hidden=!authenticated;$('connection').textContent=configured?'Ready to create':'API key needed';if(authenticated)renderRoute();}
+async function refreshDemo(){const s=await api('status');demoAvailable=!!s.demo?.available;$('demoLimit').textContent=s.demo?.message||'';controls();}
+setInterval(()=>{if(authenticated&&!busy)refreshDemo().catch(()=>{demoAvailable=false;controls();});},60000);
+async function status(){const s=await api('status');authenticated=s.authenticated;configured=s.configured;demoAvailable=!!s.demo?.available;$('demoLimit').textContent=s.demo?.message||'';if(!authenticated)document.body.classList.remove('document-mode');$('loginPanel').hidden=authenticated;$('app').hidden=!authenticated;$('connection').textContent=configured?'Ready to create':'API key needed';if(authenticated)renderRoute();}
 $('loginForm').onsubmit=async e=>{e.preventDefault();const button=e.submitter;button.disabled=true;try{await api('login',{password:$('password').value});$('password').value='';$('loginError').textContent='';await status();}catch(err){$('loginError').textContent=err.message;}finally{button.disabled=false;}};
 $('logout').onclick=async()=>{if(busy){notice('Wait for the active proposal to finish before signing out.');return;}try{await api('logout',{});$('transcript').value='';$('notes').value='';$('company').value='';$('transcript').oninput();activeId=null;editorReady=false;$('editor').src='about:blank';await status();}catch(err){notice(err.message);}};
 $('transcript').oninput=()=>{$('charCount').textContent=$('transcript').value.length.toLocaleString()+' / 100,000';};
@@ -84,7 +86,7 @@ $('generateForm').onsubmit=async e=>{
   busy=true;startedAt=Date.now();$('generationStatus').textContent='';notice('');controls();navigate('#/preparing');$('elapsed').textContent='0:00';ticker=setInterval(()=>{const s=Math.floor((Date.now()-startedAt)/1000);$('elapsed').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');},1000);
   try{const result=await api('generate',{transcript,notes});const draft={version:1,fields:result.proposal,original:result.proposal,review:result.review,model:result.model,usage:result.usage,generatedAt:new Date().toISOString()};if(!isDraft(draft,requiredKeys))throw Error('The draft could not be opened. Your earlier proposals are unchanged.');const record=createRecord(draft);items=upsert(items,record);persist();busy=false;reviewOpen=true;$('transcript').value='';$('notes').value='';$('company').value='';$('fileName').textContent='Paste notes or drop a .txt file here';$('transcript').oninput();navigate('#/proposal/'+record.id);}
   catch(err){busy=false;navigate('#/new');$('generationStatus').textContent=err.message;notice('We couldn’t finish this proposal. Your input is still here, and your saved proposals are unchanged.');}
-  finally{busy=false;clearInterval(ticker);controls();}
+  finally{busy=false;clearInterval(ticker);controls();try{await refreshDemo();}catch{demoAvailable=false;controls();}}
 };
 $('reviewed').onchange=()=>{if(!current())return;updateRecord({reviewed:$('reviewed').checked},{edited:true});post('review',{reviewed:current().reviewed});};
 $('reviewToggle').onclick=()=>setReview(!reviewOpen);
