@@ -34,7 +34,7 @@ The server key is never sent to the browser. A random demo password protects gen
 
 This is a shared-password test app, not a multi-tenant product. It does not have a durable per-user rate limit, database, team permissions or centralized revision history. Keep the password private and set an appropriate OpenAI project budget. Calls made in the demo use the configured account and incur API charges.
 
-Transcripts are sent to OpenAI only on generation and are not persisted by the app. OpenAI and hosting provider policies still apply. Proposal text, review notes and original generated fields are stored in the browser's local storage and downloaded draft JSON; they are not uploaded to a shared database. Do not use a shared browser profile for confidential work. Clear draft removes the prior local draft. Source transcripts and client example files are not bundled in this repository.
+Transcripts are sent to OpenAI only on generation and are not persisted by the app. OpenAI and hosting provider policies still apply. Proposal history, edited text, review notes and original generated fields are stored in the browser's local storage and downloaded draft JSON; they are not uploaded to a shared database. Do not use a shared browser profile for confidential work. History keeps separate proposals and automatically migrates the previous single browser draft. There is no cloud or cross-device history. Source transcripts and client example files are not bundled in this repository.
 
 ## Code
 
@@ -43,7 +43,8 @@ Transcripts are sent to OpenAI only on generation and are not persisted by the a
 - `api/service.js`: login, session check, generation and logout.
 - `public/editor.html` + `proposal.css`: fixed four-page layout.
 - `public/editor.js`: text-only editing, synchronized repeated fields, overflow guard.
-- `public/app.js`: generation, review, local draft save/import and PDF action.
+- `public/app.js`: separate New, Preparing, History and Proposal screens, generation, review, draft import/export and PDF action.
+- `public/history.js`: browser history, legacy draft migration, safe record merging, search and status filtering.
 
 ## References
 
@@ -53,3 +54,9 @@ Transcripts are sent to OpenAI only on generation and are not persisted by the a
 ## Validation (2026-09-19)
 
 Six contract/security tests pass. Live production sign-in, unauthorized API rejection, generation, secret-path 404 checks, repeated-field editing and browser persistence were checked. A generated proposal printed to exactly four A4 pages in Chrome; deliberate overflow disabled export. Initial GPT-4.1-mini output failed content review; the default was changed to GPT-5.4 and field guidance tightened. Two GPT-5.4 test generations succeeded, including missing-number defaults. AE review remains necessary, particularly for tool-cost inclusion, assumptions and source interpretation.
+
+## Studio UX update (2026-09-19)
+
+The input form and document editor now have separate routes. Generation opens a preparation screen, then the result opens in a full document workspace with a collapsible review panel, page navigation, fit-to-width preview, Undo and export. History shows company, fee, duration, lead scope, saved date and review status, with search and filters. Every new generation/import creates its own record. Existing single-draft browser storage is migrated without deleting its original entry. New records and newer edits in other tabs are preserved when saving. Source transcripts are not added to history.
+
+Thirteen unit tests and a browser workflow check cover migration, draft isolation, reload, edits, filtering, import/export, failed-generation input recovery, overflow blocking and mobile layout. UI testing uses a captured response, not another paid API generation.
