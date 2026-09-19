@@ -12,7 +12,7 @@ for(const f of fields){f.contentEditable='plaintext-only';f.setAttribute('role',
 document.getElementById('undoButton').onclick=()=>{const last=undo.pop();if(last){fill(last);changed();}};
 document.getElementById('restoreField').onclick=()=>{undo.push(values());fill({[active.dataset.bind]:baseline[active.dataset.bind]||''});changed();};
 const print=()=>{if(fit()&&reviewed)window.print();};document.getElementById('printButton').onclick=print;
-window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.source!=='bootprint-app')return;const m=e.data;if(m.type==='load'){fill(initial);fill(m.fields);baseline=values();undo=[];reviewed=!!m.reviewed;document.fonts.ready.then(()=>{fit();notify('snapshot',{fields:values()});});}if(m.type==='review'){reviewed=!!m.reviewed;fit();}if(m.type==='print')print();});
+window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.source!=='bootprint-app')return;const m=e.data;if(m.type==='ping'&&Object.keys(initial).length)notify('ready',{});if(m.type==='load'){fill(initial);fill(m.fields);baseline=values();undo=[];reviewed=!!m.reviewed;document.fonts.ready.then(()=>{fit();notify('snapshot',{fields:values()});});}if(m.type==='review'){reviewed=!!m.reviewed;fit();}if(m.type==='print')print();});
 window.addEventListener('beforeprint',fit);window.addEventListener('resize',fit);
 fetch('/defaults.json').then(r=>r.json()).then(data=>{fill(data);initial=values();baseline=values();notify('ready',{});document.fonts.ready.then(fit);});
 })();
