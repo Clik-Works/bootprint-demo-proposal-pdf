@@ -17,7 +17,7 @@ Use http://127.0.0.1:8780. `DEMO_PASSWORD` must be at least 20 characters; use a
 ## Vercel
 
 Framework: Other. Build command: `npm run build`. Output directory: `public`.
-Set sensitive production environment variables `OPENAI_API_KEY`, `DEMO_PASSWORD`, and optionally `OPENAI_MODEL` (default `gpt-5.4`). Redeploy after changing variables. Preview deployments fail closed until separately configured. Connect this GitHub repository in Project Settings > Git to deploy new commits automatically.
+Set sensitive production environment variables `OPENAI_API_KEY`, `DEMO_PASSWORD`, and optionally `OPENAI_MODEL` (default `gpt-5.4`). Redeploy after changing variables. Preview deployments fail closed until separately configured. The private `Clik-Works/bootprint-demo-proposal-pdf` repository is connected to Vercel; pushes to `main` deploy to production.
 
 ## Workflow
 
@@ -49,3 +49,7 @@ Transcripts are sent to OpenAI only on generation and are not persisted by the a
 
 [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
 [Vercel Node.js Functions](https://vercel.com/docs/functions/runtimes/node-js)
+
+## Validation (2026-09-19)
+
+Six contract/security tests pass. Live production sign-in, unauthorized API rejection, generation, secret-path 404 checks, repeated-field editing and browser persistence were checked. A generated proposal printed to exactly four A4 pages in Chrome; deliberate overflow disabled export. Initial GPT-4.1-mini output failed content review; the default was changed to GPT-5.4 and field guidance tightened. Two GPT-5.4 test generations succeeded, including missing-number defaults. AE review remains necessary, particularly for tool-cost inclusion, assumptions and source interpretation.
