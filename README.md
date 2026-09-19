@@ -60,3 +60,7 @@ Six contract/security tests pass. Live production sign-in, unauthorized API reje
 The input form and document editor now have separate routes. Generation opens a preparation screen, then the result opens in a full document workspace with a collapsible review panel, page navigation, fit-to-width preview, Undo and export. History shows company, fee, duration, lead scope, saved date and review status, with search and filters. Every new generation/import creates its own record. Existing single-draft browser storage is migrated without deleting its original entry. New records and newer edits in other tabs are preserved when saving. Source transcripts are not added to history.
 
 Thirteen unit tests and a browser workflow check cover migration, draft isolation, reload, edits, filtering, import/export, failed-generation input recovery, overflow blocking and mobile layout. UI testing uses a captured response, not another paid API generation.
+
+## Minimal result screen (2026-09-19)
+
+At the user's request, the proposal result now shows only the editable A4 pages and Export PDF. App navigation, metadata, review notes, page navigation and extra editing controls are hidden in this view. PDF export no longer requires a review checkbox; overflow validation still blocks clipped output. History and creation screens remain available through browser navigation, and draft JSON backups can be downloaded from History. Source/review metadata remains in saved records.
