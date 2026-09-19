@@ -7,7 +7,7 @@ function notice(text){$('notice').textContent=text;$('notice').hidden=!text;}
 function persist(){
   try{items=mergeHistory(readHistory(localStorage,requiredKeys).items,items);writeHistory(localStorage,items);unsaved=false;storageBlocked=false;$('draftStatus').textContent='All changes saved';$('saveIndicator').textContent='Saved in this browser';$('saveIndicator').classList.remove('unsaved');if($('notice').textContent.startsWith('Your changes could not be saved'))notice('');}
   catch{unsaved=true;$('draftStatus').textContent='Not saved';$('saveIndicator').textContent='Changes not saved';$('saveIndicator').classList.add('unsaved');notice('Your changes could not be saved in this browser. Try Save again, or download a backup from History before closing this tab.');}
-  $('historyCount').textContent=items.length;
+  drawSidebarHistory();
   return !unsaved;
 }
 function updateRecord(patch,{edited=false}={}){const record=current();if(!record)return;items=upsert(items,{...record,...patch,...(edited?{updatedAt:new Date().toISOString()}: {})});persist();controls();}
@@ -22,8 +22,22 @@ function setReview(open){reviewOpen=open;$('reviewPanel').hidden=!open;$('review
 function formatDate(value){const d=new Date(value);return Number.isNaN(d.getTime())?'Date unavailable':d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});}
 function formatUpdated(value){const d=new Date(value);if(Number.isNaN(d.getTime()))return 'Date unavailable';const today=new Date();return d.toDateString()===today.toDateString()?'Today, '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}):formatDate(value);}
 function makeText(tag,text,className){const node=document.createElement(tag);node.textContent=text;if(className)node.className=className;return node;}
+function drawSidebarHistory(){
+  $('historyCount').textContent=items.length;
+  $('sidebarHistory').hidden=!items.length;
+  $('allHistory').hidden=items.length<=5;
+  const list=$('recentCompanies');list.replaceChildren();
+  for(const row of findHistory(items).slice(0,5)){
+    const item=document.createElement('li'),link=document.createElement('a');
+    const company=row.fields.company||'Untitled proposal',date=new Date(row.updatedAt);
+    const stamp=Number.isNaN(date.getTime())?'Date unavailable':date.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',...(date.getFullYear()!==new Date().getFullYear()?{year:'numeric'}:{})});
+    link.href='#/proposal/'+row.id;link.title=company+' · Edited '+stamp;
+    const time=makeText('time',stamp);time.dateTime=row.updatedAt||'';
+    link.append(makeText('span',company),time);item.append(link);list.append(item);
+  }
+}
 function drawHistory(){
-  const rows=findHistory(items,$('search').value,$('historyFilter').value);$('historyList').replaceChildren();$('historyEmpty').hidden=items.length!==0;$('noResults').hidden=items.length===0||rows.length!==0;$('resultCount').textContent=rows.length+' proposal'+(rows.length===1?'':'s');$('historyCount').textContent=items.length;
+  const rows=findHistory(items,$('search').value,$('historyFilter').value);$('historyList').replaceChildren();$('historyEmpty').hidden=items.length!==0;$('noResults').hidden=items.length===0||rows.length!==0;$('resultCount').textContent=rows.length+' proposal'+(rows.length===1?'':'s');drawSidebarHistory();
   for(const row of rows){const card=document.createElement('article');card.className='proposal-card';const top=makeText('div','','proposal-card-top');top.append(makeText('span','▤','doc-icon'),makeText('span',row.reviewed?'Reviewed':'Draft','status-pill'+(row.reviewed?' reviewed':'')));const heading=document.createElement('h2'),link=makeText('a',row.fields.company||'Untitled proposal');link.href='#/proposal/'+row.id;heading.append(link);const sub=makeText('p',row.origin==='recovered'?'Recovered from your earlier draft':row.origin==='imported'?'Imported proposal · 4 A4 pages':'Cold email marketing pilot · 4 A4 pages','subtitle');const metrics=makeText('div','','card-metrics');for(const [field,label]of [['leads','Leads'],['duration','Duration'],['fee','Pilot fee']]){const metric=document.createElement('div');metric.append(makeText('b',row.fields[field]||'—'),makeText('span',label));metrics.append(metric);}const footer=makeText('div','','card-footer');const time=makeText('time','Edited '+formatUpdated(row.updatedAt));time.dateTime=row.updatedAt||'';const open=makeText('a','Open proposal →');open.href=link.href;const backup=makeText('button','Download draft');backup.className='history-download';backup.onclick=()=>downloadDraft(row);footer.append(time,backup,open);card.append(top,heading,sub,metrics,footer);$('historyList').append(card);}
 }
 function loadEditor(){
@@ -44,7 +58,7 @@ function renderRoute(){
   document.body.classList.toggle('document-mode',!$('resultPage').hidden);$('routeLabel').textContent=label;document.title=(current()?.fields.company||label)+' · Bootprint';window.scrollTo(0,0);controls();
 }
 window.addEventListener('hashchange',renderRoute);
-window.addEventListener('storage',event=>{if(event.key!=='bootprint-proposal-history-v2')return;try{items=mergeHistory(items,readHistory(localStorage,requiredKeys).items);$('historyCount').textContent=items.length;if(location.hash==='#/history')drawHistory();else if(activeId)notice('History changed in another tab. Reopen this proposal from History to load the latest saved version.');}catch{notice('Could not refresh history from another tab. Your open draft is unchanged.');}});
+window.addEventListener('storage',event=>{if(event.key!=='bootprint-proposal-history-v2')return;try{items=mergeHistory(items,readHistory(localStorage,requiredKeys).items);drawSidebarHistory();if(location.hash==='#/history')drawHistory();else if(activeId)notice('History changed in another tab. Reopen this proposal from History to load the latest saved version.');}catch{notice('Could not refresh history from another tab. Your open draft is unchanged.');}});
 window.addEventListener('message',e=>{
   if(e.origin!==location.origin||e.source!==$('editor').contentWindow||e.data?.source!=='bootprint-editor')return;const m=e.data;
   if(m.type==='ready'){editorReady=true;if(current())loadEditor();return;}
@@ -87,6 +101,6 @@ async function init(){
   requiredKeys=Object.keys(await(await fetch('/defaults.json')).json());
   try{const saved=readHistory(localStorage,requiredKeys);items=saved.items;if(saved.migrated){persist();notice('Your previous browser draft is now in History.');}}
   catch(err){storageBlocked=true;notice(err.message||'Browser history is unavailable. Download drafts to keep them.');}
-  $('historyCount').textContent=items.length;await status();
+  drawSidebarHistory();await status();
 }
 init().catch(err=>{$('loginPanel').hidden=false;$('loginError').textContent=err.message;$('connection').textContent='Connection unavailable';});

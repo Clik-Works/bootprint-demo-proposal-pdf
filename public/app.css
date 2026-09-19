@@ -14,3 +14,15 @@
 @media(max-width:650px){.document-mode .result-heading{padding:10px 14px}.document-mode #export{font-size:12px;padding:10px 15px}.card-footer{flex-wrap:wrap}}
 
 .document-mode #homeButton{margin-right:auto}.document-mode #saveIndicator{font-size:11px;color:#627a6e}.document-mode #saveIndicator.unsaved{color:#a44323}@media(max-width:650px){.document-mode #saveIndicator{font-size:9px;max-width:80px;line-height:1.3}.document-mode .result-heading{gap:8px}.document-mode #homeButton{font-size:11px;padding:9px}.document-mode .result-heading .actions{flex-wrap:nowrap}}
+
+/* Recent companies stay quiet and compact beneath History. */
+.sidebar-history{margin:4px 0 0 21px;padding-left:13px;border-left:1px solid #dde3eb;min-height:0;overflow-y:auto}
+.sidebar-history ul{list-style:none;margin:0;padding:0}
+.sidebar-history li{margin:0}
+.sidebar-history li a{display:block;padding:9px 5px;border-radius:5px;text-decoration:none;color:#42536b}
+.sidebar-history li a:hover,.sidebar-history li a:focus-visible{background:#e9eef6;color:#2457c5}
+.sidebar-history li span{display:block;font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-history time{display:block;margin-top:4px;font-size:10px;line-height:1.3;color:#8590a0}
+.all-history{display:block;padding:10px 5px;font-size:10px;color:#657690;text-decoration:none}
+.all-history:hover{text-decoration:underline}
+@media(max-width:650px){.sidebar-history{margin:8px 0 10px;padding-left:0;border-left:0;max-height:116px}.sidebar-history ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:12px}.sidebar-history li a{padding:7px 5px}.sidebar-history li span{font-size:11px}.sidebar-history time{font-size:9px}.all-history{padding:7px 5px}}
