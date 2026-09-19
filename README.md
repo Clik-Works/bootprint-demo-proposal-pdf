@@ -64,3 +64,7 @@ Thirteen unit tests and a browser workflow check cover migration, draft isolatio
 ## Minimal result screen (2026-09-19)
 
 At the user's request, the proposal result now shows only the editable A4 pages and Export PDF. App navigation, metadata, review notes, page navigation and extra editing controls are hidden in this view. PDF export no longer requires a review checkbox; overflow validation still blocks clipped output. History and creation screens remain available through browser navigation, and draft JSON backups can be downloaded from History. Source/review metadata remains in saved records.
+
+## Navigation and saving (2026-09-19)
+
+The minimal result toolbar now contains Home, a browser-save status, Save, and Export PDF. Text still autosaves; Save retries an explicit write to local history. Failed persistence marks changes unsaved, warns before Home or browser Back navigation, and triggers the browser leave warning on reload/close. Cancel keeps the editor open. A successful save clears the warning.

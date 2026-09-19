@@ -1,14 +1,14 @@
 import {isDraft,createRecord,readHistory,writeHistory,upsert,findHistory,mergeHistory} from './history.js';
 const $=id=>document.getElementById(id);
-let items=[],requiredKeys=[],activeId=null,editorReady=false,valid=false,busy=false,authenticated=false,configured=false,storageBlocked=false,reviewOpen=true,startedAt=0,ticker;
+let items=[],requiredKeys=[],activeId=null,editorReady=false,valid=false,busy=false,authenticated=false,configured=false,storageBlocked=false,reviewOpen=true,startedAt=0,ticker,unsaved=false;
 const current=()=>items.find(x=>x.id===activeId);
 const post=(type,data={})=>$('editor').contentWindow?.postMessage({source:'bootprint-app',type,...data},location.origin);
 function notice(text){$('notice').textContent=text;$('notice').hidden=!text;}
 function persist(){
-  if(storageBlocked){$('draftStatus').textContent='Not saved · Download a draft';return;}
-  try{items=mergeHistory(readHistory(localStorage,requiredKeys).items,items);writeHistory(localStorage,items);$('draftStatus').textContent='All changes saved';}
-  catch{$('draftStatus').textContent='Not saved · Download a draft';notice('Browser storage is unavailable or full. Your changes are still open here; download this draft before leaving.');}
+  try{items=mergeHistory(readHistory(localStorage,requiredKeys).items,items);writeHistory(localStorage,items);unsaved=false;storageBlocked=false;$('draftStatus').textContent='All changes saved';$('saveIndicator').textContent='Saved in this browser';$('saveIndicator').classList.remove('unsaved');if($('notice').textContent.startsWith('Your changes could not be saved'))notice('');}
+  catch{unsaved=true;$('draftStatus').textContent='Not saved';$('saveIndicator').textContent='Changes not saved';$('saveIndicator').classList.add('unsaved');notice('Your changes could not be saved in this browser. Try Save again, or download a backup from History before closing this tab.');}
   $('historyCount').textContent=items.length;
+  return !unsaved;
 }
 function updateRecord(patch,{edited=false}={}){const record=current();if(!record)return;items=upsert(items,{...record,...patch,...(edited?{updatedAt:new Date().toISOString()}: {})});persist();controls();}
 function controls(){const r=current();$('export').disabled=!r||!valid;$('reviewed').checked=!!r?.reviewed;$('generate').disabled=busy||!configured;$('generate').textContent=busy?'Proposal in progress…':'Create proposal →';$('runningLink').hidden=!busy;}
@@ -34,6 +34,7 @@ function loadEditor(){
 function navigate(route){if(location.hash===route)renderRoute();else location.hash=route;}
 function renderRoute(){
   if(!authenticated)return;
+  if(activeId&&unsaved&&(location.hash||'#/new')!=='#/proposal/'+activeId){if(!confirm('Your latest changes have not been saved. Stay here and try Save again, or leave anyway? Choose Cancel to stay.')){history.replaceState(null,'','#/proposal/'+activeId);return;}}
   for(const id of ['newPage','historyPage','preparingPage','resultPage','missingPage'])$(id).hidden=true;
   const route=location.hash||'#/new';let label='New proposal';$('navNew').classList.toggle('active',route==='#/new'||route==='#/preparing');$('navHistory').classList.toggle('active',route==='#/history'||route.startsWith('#/proposal/'));
   if(route==='#/history'){$('historyPage').hidden=false;label='History';activeId=null;drawHistory();}
@@ -76,11 +77,12 @@ $('reviewToggle').onclick=()=>setReview(!reviewOpen);
 $('export').onclick=()=>post('print');$('undo').onclick=()=>post('undo');$('restore').onclick=()=>post('restore');$('zoom').onchange=()=>post('zoom',{value:$('zoom').value});
 for(const b of document.querySelectorAll('[data-page]'))b.onclick=()=>post('page',{page:Number(b.dataset.page)});
 function downloadDraft(record){if(!record)return;const url=URL.createObjectURL(new Blob([JSON.stringify(record,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=(record.fields.company||'proposal').replace(/[^a-zA-Z0-9_-]/g,'-')+'-draft.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-$('save').onclick=()=>downloadDraft(current());
+$('save').onclick=()=>{persist();};
+$('homeButton').onclick=()=>navigate('#/new');
 for(const id of ['importNew','importHistory'])$(id).onclick=()=>$('draftFile').click();
 $('draftFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>1500000)throw Error('Draft file is too large.');const data=JSON.parse(await f.text());if(!isDraft(data,requiredKeys))throw Error('Choose a valid Bootprint draft JSON file.');const record=createRecord(data,{origin:'imported'});items=upsert(items,record);persist();reviewOpen=true;navigate('#/proposal/'+record.id);}catch(err){notice(err.message);}e.target.value='';};
 $('search').oninput=drawHistory;$('historyFilter').onchange=drawHistory;$('resetSearch').onclick=()=>{$('search').value='';$('historyFilter').value='all';drawHistory();};
-window.addEventListener('beforeunload',e=>{if(busy){e.preventDefault();e.returnValue='';}});
+window.addEventListener('beforeunload',e=>{if(busy||unsaved){e.preventDefault();e.returnValue='';}});
 async function init(){
   requiredKeys=Object.keys(await(await fetch('/defaults.json')).json());
   try{const saved=readHistory(localStorage,requiredKeys);items=saved.items;if(saved.migrated){persist();notice('Your previous browser draft is now in History.');}}
