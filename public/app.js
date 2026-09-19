@@ -55,7 +55,7 @@ function renderRoute(){
   else if(route==='#/preparing'&&busy){$('preparingPage').hidden=false;label='Preparing proposal';activeId=null;}
   else if(route.startsWith('#/proposal/')){const id=route.slice(11),record=items.find(x=>x.id===id);if(record){const changed=activeId!==id;activeId=id;$('resultPage').hidden=false;label='Proposal';reviewUI();if(changed||!editorReady)loadEditor();else post('review',{reviewed:record.reviewed});setReview(reviewOpen);}else{$('missingPage').hidden=false;label='Proposal not found';activeId=null;}}
   else{$('newPage').hidden=false;activeId=null;if(route==='#/preparing')notice('The generation session is no longer active. Check History for completed proposals, or start a new one.');}
-  document.body.classList.toggle('document-mode',!$('resultPage').hidden);$('routeLabel').textContent=label;document.title=(current()?.fields.company||label)+' · Bootprint';window.scrollTo(0,0);controls();
+  document.body.classList.toggle('document-mode',!$('resultPage').hidden);$('routeLabel').textContent=label;document.title=(current()?.fields.company||label)+' · Clickworks';window.scrollTo(0,0);controls();
 }
 window.addEventListener('hashchange',renderRoute);
 window.addEventListener('storage',event=>{if(event.key!=='bootprint-proposal-history-v2')return;try{items=mergeHistory(items,readHistory(localStorage,requiredKeys).items);drawSidebarHistory();if(location.hash==='#/history')drawHistory();else if(activeId)notice('History changed in another tab. Reopen this proposal from History to load the latest saved version.');}catch{notice('Could not refresh history from another tab. Your open draft is unchanged.');}});
@@ -64,7 +64,7 @@ window.addEventListener('message',e=>{
   if(m.type==='ready'){editorReady=true;if(current())loadEditor();return;}
   if(!activeId||m.documentId!==activeId)return;
   if(m.type==='snapshot')updateRecord({fields:m.fields});
-  if(m.type==='changed'){updateRecord({fields:m.fields,reviewed:false},{edited:true});$('proposalTitle').textContent=m.fields.company||'Untitled proposal';document.title=(m.fields.company||'Proposal')+' · Bootprint';}
+  if(m.type==='changed'){updateRecord({fields:m.fields,reviewed:false},{edited:true});$('proposalTitle').textContent=m.fields.company||'Untitled proposal';document.title=(m.fields.company||'Proposal')+' · Clickworks';}
   if(m.type==='fit'){valid=m.valid;$('fitMessage').textContent=m.text;$('fitMessage').classList.toggle('invalid',!valid);controls();}
   if(m.type==='page')for(const b of document.querySelectorAll('[data-page]'))b.classList.toggle('active',Number(b.dataset.page)===m.page);
 });
@@ -94,7 +94,7 @@ function downloadDraft(record){if(!record)return;const url=URL.createObjectURL(n
 $('save').onclick=()=>{persist();};
 $('homeButton').onclick=()=>navigate('#/new');
 for(const id of ['importNew','importHistory'])$(id).onclick=()=>$('draftFile').click();
-$('draftFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>1500000)throw Error('Draft file is too large.');const data=JSON.parse(await f.text());if(!isDraft(data,requiredKeys))throw Error('Choose a valid Bootprint draft JSON file.');const record=createRecord(data,{origin:'imported'});items=upsert(items,record);persist();reviewOpen=true;navigate('#/proposal/'+record.id);}catch(err){notice(err.message);}e.target.value='';};
+$('draftFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>1500000)throw Error('Draft file is too large.');const data=JSON.parse(await f.text());if(!isDraft(data,requiredKeys))throw Error('Choose a valid Clickworks draft JSON file.');const record=createRecord(data,{origin:'imported'});items=upsert(items,record);persist();reviewOpen=true;navigate('#/proposal/'+record.id);}catch(err){notice(err.message);}e.target.value='';};
 $('search').oninput=drawHistory;$('historyFilter').onchange=drawHistory;$('resetSearch').onclick=()=>{$('search').value='';$('historyFilter').value='all';drawHistory();};
 window.addEventListener('beforeunload',e=>{if(busy||unsaved){e.preventDefault();e.returnValue='';}});
 async function init(){
