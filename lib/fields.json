@@ -1,0 +1,297 @@
+{
+  "company": {
+    "default": "Northstar Studio",
+    "max": 55,
+    "description": "Client company name. Invent a relevant sample name only when missing and flag it in review notes."
+  },
+  "provider": {
+    "default": "CLIKWORKS",
+    "max": 32,
+    "description": "Provider business name; default CLIKWORKS unless operator specifies another."
+  },
+  "fee": {
+    "default": "$5,000",
+    "max": 22,
+    "description": "Total pilot fee with currency symbol. Default $5,000 only if no current scoped fee is provided; distinguish historical numbers."
+  },
+  "duration": {
+    "default": "45 days",
+    "max": 20,
+    "description": "Total pilot duration. Default 45 days only when missing."
+  },
+  "leads": {
+    "default": "3,000",
+    "max": 18,
+    "description": "Total leads in pilot scope. Default 3,000 only when missing. Do not confuse emails with leads or an initial cohort with total scope."
+  },
+  "status": {
+    "default": "DRAFT FOR REVIEW",
+    "max": 38,
+    "description": "Short proposal status. Never say agreed unless explicitly accepted. Use SAMPLE OFFER if scope was declined or invented."
+  },
+  "summary": {
+    "default": "Build a relevant prospect list, test a clear offer, and find out whether cold email can start useful sales conversations.",
+    "max": 220,
+    "description": "One plain-language sentence: client sells WHAT to WHOM, and what this email pilot will test. Do not claim results."
+  },
+  "lead_label": {
+    "default": "Leads to research",
+    "max": 32,
+    "description": "lead label"
+  },
+  "contact": {
+    "default": "Client team",
+    "max": 75,
+    "description": "contact"
+  },
+  "author": {
+    "default": "Bharat Devana",
+    "max": 45,
+    "description": "author"
+  },
+  "problem": {
+    "default": "You need a repeatable way to reach the right buyers, without adding more manual prospecting to the team\u2019s day.",
+    "max": 240,
+    "description": "problem"
+  },
+  "hypothesis": {
+    "default": "Test a focused audience and a small set of messages. Use the replies to learn which buyer problems and offers resonate.",
+    "max": 240,
+    "description": "Tentative test hypothesis about the CLIENT offer, not the products sold by their target customers. Use aim or test, never will increase or benchmarks."
+  },
+  "audience": {
+    "default": "Agree the geography, company size, buyer roles, and exclusions together before building the first list.",
+    "max": 240,
+    "description": "The buyers of the CLIENT product. Distinguish target companies from their vendors. For gifting, roles buy gifts or swag, not martech. Include only supported geography, employee size and role details."
+  },
+  "scope_note": {
+    "default": "Sample scope for testing. Final audience, budget, and timeline need review before kickoff.",
+    "max": 180,
+    "description": "scope note"
+  },
+  "scope_intro": {
+    "default": "We handle research and campaign execution. Your team supplies the offer, approvals, and timely sales follow-up.",
+    "max": 190,
+    "description": "scope intro"
+  },
+  "work1_title": {
+    "default": "Agree the audience",
+    "max": 45,
+    "description": "work1 title"
+  },
+  "work1": {
+    "default": "Confirm the ideal customer, buyer roles, exclusions, and a small sample before scaling research.",
+    "max": 230,
+    "description": "work1"
+  },
+  "work2_title": {
+    "default": "Build a checked list",
+    "max": 45,
+    "description": "work2 title"
+  },
+  "work2": {
+    "default": "Research suitable prospects, check current roles and email validity, and remove duplicates and exclusions.",
+    "max": 230,
+    "description": "work2"
+  },
+  "work3_title": {
+    "default": "Write and prepare",
+    "max": 45,
+    "description": "work3 title"
+  },
+  "work3": {
+    "default": "Write focused messages and follow-ups. Check existing domains and inboxes before deciding what else is needed.",
+    "max": 230,
+    "description": "work3"
+  },
+  "work4_title": {
+    "default": "Run and improve",
+    "max": 45,
+    "description": "work4 title"
+  },
+  "work4": {
+    "default": "Launch after approval, review human replies, and refine the audience and message as evidence comes in.",
+    "max": 230,
+    "description": "work4"
+  },
+  "client1": {
+    "default": "Share customer examples, approved claims, account access, and do-not-contact lists.",
+    "max": 150,
+    "description": "A concrete action the CLIENT must take: share access, examples, approved offer and exclusions. This is a responsibility, not a descriptive fact."
+  },
+  "client2": {
+    "default": "Review the target sample and copy. Name one person who can approve changes.",
+    "max": 150,
+    "description": "A concrete CLIENT responsibility for sample-list and copy approvals with a named owner or owner to confirm."
+  },
+  "client3": {
+    "default": "Own buyer follow-up, discovery calls, quotations, and fulfilment.",
+    "max": 150,
+    "description": "A concrete CLIENT responsibility for buyer follow-up, calls, quotes and fulfilment."
+  },
+  "launch_gate": {
+    "default": "We agree the audience, offer, copy, sending readiness, and reply owner before launch. No campaign starts without approval.",
+    "max": 210,
+    "description": "launch gate"
+  },
+  "exclusions": {
+    "default": "Website work, full CRM rebuilds, paid ads, and sales closing are outside this pilot unless separately agreed.",
+    "max": 190,
+    "description": "exclusions"
+  },
+  "timeline_intro": {
+    "default": "The pilot runs for 45 days from kickoff, with launch dependent on list quality, approvals, and sending readiness.",
+    "max": 200,
+    "description": "timeline intro"
+  },
+  "phase1_days": {
+    "default": "Days 01\u201310",
+    "max": 32,
+    "description": "Contiguous numbered DAY RANGE covering this phase, e.g. Days 01\u201310. Three phases must cover the total duration."
+  },
+  "phase1_title": {
+    "default": "Prepare",
+    "max": 36,
+    "description": "phase1 title"
+  },
+  "phase1": {
+    "default": "Review the setup, agree the audience, check a sample list, and approve the first messages.",
+    "max": 175,
+    "description": "phase1"
+  },
+  "phase2_days": {
+    "default": "Days 11\u201330",
+    "max": 32,
+    "description": "Contiguous numbered DAY RANGE covering this phase, e.g. Days 01\u201310. Three phases must cover the total duration."
+  },
+  "phase2_title": {
+    "default": "Test",
+    "max": 36,
+    "description": "phase2 title"
+  },
+  "phase2": {
+    "default": "Launch at a safe pace, review human replies, and check whether the right buyers are responding.",
+    "max": 175,
+    "description": "phase2"
+  },
+  "phase3_days": {
+    "default": "Days 31\u201345",
+    "max": 32,
+    "description": "Contiguous numbered DAY RANGE covering this phase, e.g. Days 01\u201310. Three phases must cover the total duration."
+  },
+  "phase3_title": {
+    "default": "Improve",
+    "max": 36,
+    "description": "phase3 title"
+  },
+  "phase3": {
+    "default": "Refine the offer and targeting, document the results, and agree what should happen next.",
+    "max": 175,
+    "description": "phase3"
+  },
+  "timing_note": {
+    "default": "If access, approvals, or inbox readiness cause delays, agree a revised schedule before sending.",
+    "max": 180,
+    "description": "timing note"
+  },
+  "metric1_title": {
+    "default": "List quality",
+    "max": 32,
+    "description": "metric1 title"
+  },
+  "metric1": {
+    "default": "Company fit, role fit, current employment, exclusions, and email verification are separate checks.",
+    "max": 175,
+    "description": "Clear numerator and denominator for human reply rate: unique human respondents / unique people reached, exclude automatic responses."
+  },
+  "metric2_title": {
+    "default": "Human replies",
+    "max": 32,
+    "description": "metric2 title"
+  },
+  "metric2": {
+    "default": "Unique human respondents divided by unique people reached. Exclude automatic replies.",
+    "max": 175,
+    "description": "Clear numerator and denominator for positive reply share: interested human respondents / human respondents."
+  },
+  "metric3_title": {
+    "default": "Buyer interest",
+    "max": 32,
+    "description": "metric3 title"
+  },
+  "metric3": {
+    "default": "Interested respondents divided by human respondents, with counts and examples alongside the percentage.",
+    "max": 175,
+    "description": "metric3"
+  },
+  "metric4_title": {
+    "default": "Sales progress",
+    "max": 32,
+    "description": "metric4 title"
+  },
+  "metric4": {
+    "default": "Track qualified conversations and next steps. Revenue can follow after the pilot ends.",
+    "max": 175,
+    "description": "metric4"
+  },
+  "success": {
+    "default": "Use list quality, relevant replies, and sales conversations to judge the test. No reply rate, meeting count, or revenue outcome is guaranteed.",
+    "max": 230,
+    "description": "Non-guaranteed test targets only if discussed; distinguish targets from promised outcomes."
+  },
+  "commercial_intro": {
+    "default": "This is a proposal for review. Confirm the scope and assumptions together before committing.",
+    "max": 190,
+    "description": "State if the client rejected the managed fee and prefers an audit. Say this is a sample managed option, NOT a smaller or accepted commitment."
+  },
+  "payment": {
+    "default": "Paid in full before kickoff.",
+    "max": 100,
+    "description": "Payment terms. Default full advance before kickoff; flag as operator default when not in call."
+  },
+  "included": {
+    "default": "Research, email checks, copy, campaign setup, management, and reporting for the agreed scope.",
+    "max": 225,
+    "description": "included"
+  },
+  "tools": {
+    "default": "Tool costs are to be confirmed before kickoff. Existing client-owned sending accounts stay with the client.",
+    "max": 225,
+    "description": "Tool-cost inclusion and ownership from call. If unclear say to confirm, never invent vendor pricing."
+  },
+  "ownership": {
+    "default": "The checked lead list, approved copy, campaign results, and access to your own sending accounts.",
+    "max": 225,
+    "description": "ownership"
+  },
+  "outside": {
+    "default": "Sales closing and fulfilment remain with your team. Additional work or tools need approval before purchase.",
+    "max": 225,
+    "description": "outside"
+  },
+  "commercial_note": {
+    "default": "Missing commercial details are sample assumptions, not evidence of client approval. Confirm billing, tool costs, and any cancellation terms before kickoff.",
+    "max": 250,
+    "description": "Prominently preserve the exact budget objection and preferred immediate next step; do not soften cannot afford into sensitivity. Otherwise clear assumptions and open commercial terms."
+  },
+  "next1": {
+    "default": "Review the proposal and resolve any open scope or budget questions.",
+    "max": 145,
+    "description": "next1"
+  },
+  "next2": {
+    "default": "Confirm the agreement and payment, then share access and exclusions.",
+    "max": 145,
+    "description": "next2"
+  },
+  "next3": {
+    "default": "Approve the sample audience and messages before launch.",
+    "max": 145,
+    "description": "Final client-facing next step. Do not name an internal team member, subcontractor or proposed referral."
+  },
+  "final_note": {
+    "default": "A pilot is a test, not a performance guarantee. Nothing renews automatically.",
+    "max": 155,
+    "description": "Short client-facing approval/assumption note. Do not name internal collaborators."
+  }
+}
