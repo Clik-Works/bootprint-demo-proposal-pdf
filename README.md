@@ -2,6 +2,9 @@
 
 Password-protected demo: paste a call transcript, generate a structured proposal using OpenAI, review assumptions, click any text to edit, and print four branded A4 pages to PDF.
 
+- Live demo: https://bootprint-demo-proposal-pdf.vercel.app
+- Public source: https://github.com/Clik-Works/bootprint-demo-proposal-pdf
+
 ## Run locally
 
 Node 22+ is required. Copy `.env.example` to `.env.local`, fill in the server-only variables, then run:
@@ -17,7 +20,7 @@ Use http://127.0.0.1:8780. `DEMO_PASSWORD` must be at least 20 characters; use a
 ## Vercel
 
 Framework: Other. Build command: `npm run build`. Output directory: `public`.
-Set sensitive production environment variables `OPENAI_API_KEY`, `DEMO_PASSWORD`, and optionally `OPENAI_MODEL` (default `gpt-5.4`). Redeploy after changing variables. Preview deployments fail closed until separately configured. The private `Clik-Works/bootprint-demo-proposal-pdf` repository is connected to Vercel; pushes to `main` deploy to production.
+Set sensitive production environment variables `OPENAI_API_KEY`, `DEMO_PASSWORD`, and optionally `OPENAI_MODEL` (default `gpt-5.4`). Redeploy after changing variables. Preview deployments fail closed until separately configured. The public `Clik-Works/bootprint-demo-proposal-pdf` repository is connected to Vercel; pushes to `main` deploy to production. No credentials or proposal content are committed to the repository.
 
 ## Workflow
 
